@@ -1,5 +1,5 @@
 # CampBook
 
-*Refactoring of YelpCamp project.
+* Refactoring of YelpCamp project.
 
-*Clone the repository and run npm install to install node packages
+* Clone the repository and run npm install to install node packages
