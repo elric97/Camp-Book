@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router({mergeParams: true}); //for sending the id to the cooments
 var Campground = require("../models/campground"),
     Comment = require("../models/comment"),
+    Booking = require("../models/booking"),
     middleware = require("../middleware");
     
 //new comments
@@ -105,8 +106,56 @@ router.delete("/comments/:comments_id",middleware.checkCOwner,function(req, res)
     });
 });
 
+router.get("/book",middleware.isLoggedIn,function(req, res) 
+{
+    Campground.findById(req.params.id,function(err,val)
+    {
+       if (err)
+       {
+           console.log(err);
+       }
+       else
+       {
+               res.render("book",{val: val});
+       }
+    });
+});
 
-
+router.post("/book",middleware.isLoggedIn,function(req,res)
+{
+    Campground.find(req.params.id,function(err,val)
+    {
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            var author = {
+               id: req.user._id,
+               username: req.user.username,
+               phonenumber: req.user.phonenumber
+            };
+            var date = req.body.date;
+            var camp= {
+                id: req.params.id
+            };
+            var val2={author: author,camp: camp,date: date};
+            Booking.create(val2,function(err,val)
+            {
+                if(err)
+                {
+                    console.log(err);
+                }
+                else
+                {
+                    req.flash("success","booked successfully");
+                    res.redirect("/campgrounds/"+req.params.id);
+                }
+            })
+        }
+    })
+});
 //middleware to check ownership
 
 module.exports = router;

@@ -3,6 +3,7 @@ var router = express.Router();
 var passport = require("passport");
 var User = require("../models/user");
 var Campground = require("../models/campground");
+var Booking = require("../models/booking");
 //main route
 router.get("/",function(req,res)
 {
@@ -83,10 +84,24 @@ router.get("/users/:id",function(req, res)
             {
                 res.redirect("/");
             }
+            // Booking.find({"author.username": found.username},function(err,bfound)
+            // {
+            //     if (err)
+            //     {
+            //         res.redirect("/");
+            //     }
+            //     console.log(bfound.camp.id);
+                
+            // });
             res.render("user/show",{user: found,camp: cfound});
         });
     });
 });
+
+// router.get("/campgrounds/:id/book",isLoggedIn,function(req, res) 
+// {
+//     res.render("book");
+// });
 
 function isLoggedIn(req,res,next)
 {
@@ -94,6 +109,7 @@ function isLoggedIn(req,res,next)
     {
         return next;
     }
+    req.flash("error","You need to be logged in");
     res.redirect("/login");
 }
 
